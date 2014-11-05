@@ -23,18 +23,19 @@ public class geturl {
 		int page=1;
 		for (page=startPage;page<=endPage;page++){
 			String html = null;
-			
+			System.out.println("-->  page"+page);
 			html = si.methodPa(s+page);
 			
-			System.out.println("-->  page"+page+'\n');
+			
 			String url = SimpleCrawler.getUrl(html);
 			try {
-				writer.write(url,0,url.length());
+				writer.write(""+page+'\n');
+				writer.write(url);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			int time = (int) Math.rint(Math.random()
+	/*		int time = (int) Math.rint(Math.random()
 					* (Paremeters.ENDTIME - Paremeters.STARTTIME)
 					+ Paremeters.STARTTIME);
 			
@@ -44,6 +45,7 @@ public class geturl {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 			writer.flush();
 			
 		}

@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;  
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -177,46 +178,85 @@ public class SimpleCrawler{
 		//return m.toString();
 	}
 	
-	public String methodPa(String strURL) throws IOException {
+	public String methodPa(String strURL){
 		System.getProperties().setProperty("proxySet", "true");// 设置代理IP，防止ip被封
 		httpClient = new HttpClient();
 		List<Header> headers = new ArrayList<Header>();
-		headers.add(new Header("User-Agent",
-				"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)"));
-		httpClient.getHostConfiguration().getParams()
-				.setParameter("http.default-headers", headers);  // 尽量添加headers，模拟浏览器
-		httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-				new DefaultHttpMethodRetryHandler(0, false));
-
-		GetMethod getMethod = new GetMethod(strURL);// 使用Get或post根据网页而定
-		int statusCode = 0;// 返回状态 200 404 500这种
-		try {
-			statusCode = httpClient.executeMethod(getMethod);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-
+		headers.add(new Header("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)"));
+		httpClient.getHostConfiguration().getParams().setParameter("http.default-headers", headers);  // 尽量添加headers，模拟浏览器
+		httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(0, false));
+		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
+		httpClient.getHttpConnectionManager().getParams().setSoTimeout(3000); 
+		
+		BufferedReader br = null;
+		InputStream input = null;
+		GetMethod getMethod = null;
 		String html = "";
-		if (statusCode == HttpStatus.SC_OK) {
-			InputStream input = getMethod.getResponseBodyAsStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(input,
-					"utf-8"));
-			String s = "";
-			while ((s = br.readLine()) != null) {
-				html = html + s + "\r\n";
-				// System.out.println(s);
+		do{
+			getMethod = new GetMethod(strURL);// 使用Get或post根据网页而定
+			int statusCode = 0;// 返回状态 200 404 500这种
+			
+			System.out.println("get...");
+			try {
+				statusCode = httpClient.executeMethod(getMethod);
+			} catch (HttpException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				continue;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				continue;
 			}
+			
+			if (statusCode == HttpStatus.SC_OK) {
+				try {
+					input = getMethod.getResponseBodyAsStream();
+					br = new BufferedReader(new InputStreamReader(input,"utf-8"));
+					String s = "";
+					while ((s = br.readLine()) != null) {
+						html = html + s + "\r\n";
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					try {
+						br.close();
+						input.close();
+						continue;
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					html = "";
+					getMethod.releaseConnection();
+					continue;
+				}
+				
+	
+				if (br != null) {
+					try {
+						br.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if (input != null) {
+					try {
+						input.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				break;
+			}else{
+				System.out.println("HttpStatus: "+statusCode);
+			}
+		}while(true);
 
-			if (br != null) {
-				br.close();
-			}
-			if (input != null) {
-				input.close();
-			}
-
-		} else {
-			System.out.println("http request error !");
-		}
+		
 		getMethod.releaseConnection();
 		return html;
 	}
