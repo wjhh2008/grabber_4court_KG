@@ -1,0 +1,798 @@
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>中国裁判文书网</title>
+<SCRIPT type=text/javascript src="js/jquery-1.9.1.min.js"></SCRIPT>
+<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui-i18n.min.js" type="text/javascript"></script>
+<script src="js/calendar.js" type="text/javascript"></script>
+<script src="js/calendar-setup.js" type="text/javascript"></script>
+<script src="js/calendar-zh-utf8.js" type="text/javascript"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<LINK rel=stylesheet type=text/css href="css/theme.css">
+<LINK rel=stylesheet type=text/css href="css/page_style.css">
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+
+<body>
+<div id="wrap">
+<div id="header">
+  <div id="header1">
+    <div id="date"> 
+      <SCRIPT language=JavaScript type=text/javascript>
+  today=new Date();
+  function initArray(){
+  	this.length=initArray.arguments.length;
+  	for(var i=0;i<this.length;i++) this[i+1]=initArray.arguments[i] 
+  };
+  var d=new initArray("星期日","星期一","星期二","星期三","星期四","星期五","星期六");
+  document.write(today.getFullYear(),"年",today.getMonth()+1,"月",today.getDate(),"日",d[today.getDay()+1]);
+</SCRIPT> 
+    </div>
+    <div id="hotLink"><a href="#" onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://www.court.gov.cn/zgcpwsw');">设为首页</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="#" onclick="javascript:window.external.AddFavorite('http://www.court.gov.cn/zgcpwsw','中国裁判文书网')">加入收藏</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="http://www.court.gov.cn/zgcpwsw">返回首页</a></div>
+  </div>
+  <div id="logo"><img src="img/logo.jpg" /></div>
+  <div id="menu">
+    <UL>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/">首页</A> </LI>
+      <LI class=line></LI>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/mshz">民事案件</A> </LI>
+      <LI class=line></LI>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/xshz">刑事案件</A> </LI>
+      <LI class=line></LI>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/xzhz">行政案件</A> </LI>
+      <LI class=line></LI>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/zscqhz">知识产权</A> </LI>
+      <LI class=line></LI>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/pchz">赔偿案件</A> </LI>
+      <LI class=line></LI>
+      <LI><A href="http://www.court.gov.cn/zgcpwsw/zxhz">执行案件</A> </LI>
+    </UL>
+  </div>
+</div>
+<div id="wenshu">
+  <TABLE class=share_table cellSpacing=0 cellPadding=10 align=center
+				width=100%>
+    <TBODY>
+      <TR>
+        <TD class=right vAlign=top align=center><DIV id=search_form style="DISPLAY: block">
+            <FORM id=form1 method=get name=form2 action=search.htm>
+              <TABLE cellSpacing=0 cellPadding=0 width=650 border=0>
+                <TBODY>
+                  <TR>
+                    <TD
+													style="FONT-SIZE: 14px; FONT-WEIGHT: bold; COLOR: #3399ff"
+													height=30 align=left>高级检索</TD>
+                  </TR>
+                </TBODY>
+              </TABLE>
+              <TABLE cellSpacing=3 cellPadding=0 width=650 border=0>
+                <TBODY>
+                  <TR>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" height=25
+													align=right>关键词：</TD>
+                    <TD colSpan=3 align=left><INPUT id=keyword
+													class=input_text style="WIDTH: 525px" name=keyword
+													value="企业"></TD>
+                  </TR>
+                  <TR>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" height=25
+													align=right>案&nbsp;&nbsp;号：</TD>
+                    <TD align=left><INPUT id=anhao class=input_text
+													value="" style="WIDTH: 200px"
+													name=caseCode></TD>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" align=right>案&nbsp;&nbsp;由：</TD>
+                    <TD align=left><INPUT id=anyou class=input_text
+													style="WIDTH: 200px" name=wenshuanyou
+													value=""></TD>
+                  </TR>
+                  <TR>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" height=25
+													align=right>案件类型：</TD>
+                    <TD align=left>
+<SELECT style="WIDTH: 200px" id="anjianleixing" name=anjianleixing>
+<OPTION value="" style="WIDTH: 200px"></OPTION>
+<OPTION style="WIDTH: 200px" >民事案件</OPTION>
+<OPTION style="WIDTH: 200px" >刑事案件</OPTION>
+<OPTION style="WIDTH: 200px" >行政案件</OPTION>
+<OPTION style="WIDTH: 200px" >知识产权</OPTION>
+<OPTION style="WIDTH: 200px" >赔偿案件</OPTION>
+<OPTION style="WIDTH: 200px" >执行案件</OPTION>
+</SELECT>
+					</TD>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" align=right>文书类型：</TD>
+                    <TD align=left>
+                   <SELECT style="WIDTH: 200px" id="wenshuleixing" name=docsourcename>
+                        <OPTION value="" style="WIDTH: 200px"></OPTION>
+                        <OPTION style="WIDTH: 200px"  value=刑事裁定书>刑事裁定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=刑事判决书>刑事判决书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=刑事决定书>刑事决定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=民事裁定书>民事裁定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=民事判决书>民事判决书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=民事决定书>民事决定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=行政裁定书>行政裁定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=行政判决书>行政判决书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=行政决定书>行政决定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=国家赔偿裁定书>国家赔偿裁定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=国家赔偿判决书>国家赔偿判决书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=国家赔偿决定书>国家赔偿决定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=执行判决书>执行判决书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=执行决定书>执行决定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=执行裁定书>执行裁定书</OPTION>
+                        <OPTION style="WIDTH: 200px"  value=通知书>通知书</OPTION>
+                      </SELECT></TD>
+                  </TR>
+                  <TR>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" height=25
+													align=right>审理法院：</TD>
+                    <TD align=left><INPUT id=court class=input_text
+													value="" style="WIDTH: 200px"
+													name=court></TD>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" align=right>裁判时间：</TD>
+                    <TD style="FONT-SIZE: 14px; FONT-WEIGHT: 400" align=left><p> 从
+                        <INPUT id=startTime style="WIDTH: 68px" readOnly
+															name=beginDate value="2004-01-01">
+                        到
+                        <INPUT id=endTime style="WIDTH: 68px" readOnly
+															name=endDate value="2014-10-22">
+                      </p></TD>
+                  </TR>
+                  <TR>
+                    <TD height=50 colspan="2" align="right"><div style="position:relative; float:left; width:150px; margin-top:2px;">
+                        <div id="intro" style="cursor:help; font-size:12px; font-weight:bold; line-height:20px;">检索说明
+                          <div id="introbox" style="position: absolute; top: 16px; left:60px; width: 400px; border: #C1DAD7 0px solid; background: #E6EAE9; cursor:default; padding:2px; overflow:auto; display:none; z-index:10; font-size:12px; font-weight:normal;">
+                            <table width="100%" cellspacing="1" style="line-height:20px;" align="left">
+                              <tr>
+                                <th width="35" style="color:#4F6B72; border:1px solid #C1DAD7; padding:auto 6px; background:#F5FAFA;" align="center">1</th>
+                                <td align="left" style="border-right:1px solid #C1DAD7; border-top:1px solid #C1DAD7; border-bottom:1px solid #C1DAD7; background:#FFF; text-align:left; padding:5px;">关键词要求两个或两个以上汉字组成</td>
+                              </tr>
+                              <tr>
+                                <th style="color:#4F6B72; border:1px solid #C1DAD7; padding:auto 6px; background:#F5FAFA;" align="center">2</th>
+                                <td align="left"  style="border-right:1px solid #C1DAD7; border-top:1px solid #C1DAD7; border-bottom:1px solid #C1DAD7; background:#FFF; text-align:left; padding:5px;">多个关键词可组合检索，显示结果为匹配全部关键词的文书，关键字之间用空格隔开</td>
+                              </tr>
+                              <tr>
+                                <th style="color:#4F6B72; border:1px solid #C1DAD7; padding:auto 6px; background:#F5FAFA;" align="center">3</th>
+                                <td align="left"  style="border-right:1px solid #C1DAD7; border-top:1px solid #C1DAD7; border-bottom:1px solid #C1DAD7; background:#FFF; text-align:left; padding:5px;">所输入的案号信息中的“<font color="red">年</font>、<font color="red">字</font>、<font color="red">第</font>”可省略，如：输入案号<font color="red">100</font>进行检索，可匹配（2013）年民申字第<font color="red">100</font>号及（2012）年民一终字第<font color="red">100</font>号</td>
+                              </tr>
+                              <tr>
+                                <th style="color:#4F6B72; border:1px solid #C1DAD7; padding:auto 6px; background:#F5FAFA;" align="center">4</th>
+                                <td align="left"  style="border-right:1px solid #C1DAD7; border-top:1px solid #C1DAD7; border-bottom:1px solid #C1DAD7; background:#FFF; text-align:left; padding:5px;">检索时间范围默认为<font color="red">2014年1月1日至当前日期</font>，如需检索往年文书需修改裁判时间起始时间范围</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                        </span></div>
+                      <input type=hidden value=1 name=adv />
+                      <input id=button class=button type=button value=" 检索 " name=button style="height:23px;font-size:12px; padding-left:3px; padding-right:3px; margin-right:10px;" /></TD>
+                    <TD colSpan=2 align="left"><input id=button2 class=button type=reset style="margin-left: 10px; height:23px;font-size:12px; padding-left:3px; padding-right:3px;" value=" 重置"  name=button2 /></TD>
+                  </TR>
+                </TBODY>
+              </TABLE>
+              <input type="hidden" name="orderby" id="orderby">
+              <input
+										type="hidden" name="order" id="order">
+            </FORM>
+          </DIV>
+          
+            <TABLE cellSpacing=0 cellPadding=0 width="95%" align=center
+									border=0>
+              <TBODY>
+                <TR>
+                  <TD><DIV class=clsTRSNavigatorDIV style="MARGIN-LEFT: 2px"> 
+                      <SCRIPT>
+														if (!window.pageUrl) {
+															var curUrl = window.location.href;
+															var pageString = /page=./;
+															curUrl = curUrl.replace(pageString, "");
+															curUrl = curUrl.replace("?&", "?");
+															curUrl = curUrl.replace("&&", "&");
+															window.pageUrl = curUrl;
+														}
+														if (!window.pageUrlPre) {
+															var url = window.pageUrl;
+															if (url.indexOf("?") >= 0) {
+																var c = url.charAt(url.length - 1);
+																if (c == "?" || c == "&") {
+																	window.pageUrlPre = url + "page=";
+																} else {
+																	window.pageUrlPre = url + "&page=";
+																}
+															} else {
+																window.pageUrlPre = url + "?page=";
+															}
+														}
+
+														function isNatureNumber(s) {
+															if (!/^[0-9]+$/.test(s)) {
+																return false;
+															}
+															if (s.charAt(0) == 0) {
+																return false;
+															}
+															return true;
+														}
+														function gotoPage(form) {
+															var page = form.page.value;
+															if (!isNatureNumber(page)) {
+																alert("请输入合法页号！");
+																form.page.select();
+															} else if (page > '1639') {
+																alert("输入的页号超过允许的范围！");
+																form.page.select();
+															} else {
+																self.location.href = window.pageUrlPre + form.page.value;
+															}
+															//return false;
+														}
+													</SCRIPT>
+                      
+
+
+
+
+
+
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+	<TBODY>
+		<TR>
+			<TD noWrap><SCRIPT>
+		document.write("<form onsubmit='gotoPage(this);return false;'>");
+		document.write("<span style='color:black;'>共<strong>209755</strong>条记录&nbsp;&nbsp;");
+		document.write("<span style='color:black;'>共<strong>20976</strong>页&nbsp;&nbsp;当前第");
+		document.write("<strong>1</strong> 页&nbsp;&nbsp;");
+		document.write("<a href='" + window.pageUrlPre + "1'>");
+		document.write("<span class='otherPage' style='padding-top:3px;'>首页</span></a>&nbsp;");
+		
+	
+	
+	document.write("<span style='margin-bottom:5px;color:red;'>" + 1 + "</span> ");
+	
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 2 + "'>");
+	document.write("<span>" + 2 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 3 + "'>");
+	document.write("<span>" + 3 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 4 + "'>");
+	document.write("<span>" + 4 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 5 + "'>");
+	document.write("<span>" + 5 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 6 + "'>");
+	document.write("<span>" + 6 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 7 + "'>");
+	document.write("<span>" + 7 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 8 + "'>");
+	document.write("<span>" + 8 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 9 + "'>");
+	document.write("<span>" + 9 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 10 + "'>");
+	document.write("<span>" + 10 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 11 + "'>");
+	document.write("<span>" + 11 + "</span></a> ");
+			
+	
+	
+		document.write("<a href='" +  window.pageUrlPre + "20976'>");
+		document.write("<span>尾页</span></a>&nbsp;");
+		document.write("<input type='text' name='page' style='width:30px;'/>&nbsp;");
+		document.write("<input name='submit' type='submit' value='GO'/>");
+		document.write("</span></form>");
+		</SCRIPT></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+
+
+                    </DIV></TD>
+                </TR>
+              </TBODY>
+            </TABLE>
+            <TABLE class=tablestyle cellSpacing=1 cellPadding=0 align=center>
+              <TBODY>
+                <TR>
+                  <TH width="40">序号</TH>
+                  <th width="150" style="cursor: pointer"
+												onclick="setOrder('court')">审理法院&nbsp;<span
+												id="courtarrow" style="font-weight: normal;"></span></th>
+                  <TH width="460" style="cursor: pointer"
+												onclick="setOrder('doctitle')">标题&nbsp;<span
+												id="doctitlearrow" style="font-weight: normal;"></span></TH>
+                  <th width="200" style="cursor: pointer"
+												onclick="setOrder('wenshuanhao')">案号&nbsp;<span
+												id="wenshuanhaoarrow" style="font-weight: normal;"></span></th>
+                  <TH width="100 style="cursor: pointer"
+												onclick="setOrder('wenshuriqi')">裁判日期 &nbsp;<span
+												id="wenshuriqiarrow" style="font-weight: normal;"></span></TH>
+                </TR>
+                
+                  <TR
+												
+										class=tdbgs_odd
+										
+									>
+                    <td align="center">1</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887910.htm"
+													title="重庆园美物业管理有限公司与向碧英物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆园美物业管理有限公司与向碧英物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第03432号</td>
+                    <td align="center">2014-08-21</td>
+                  </TR>
+                
+                  <TR
+												
+										
+										class=tdbgs_even
+									>
+                    <td align="center">2</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887903.htm"
+													title="重庆园美物业管理有限公司与唐华仲物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆园美物业管理有限公司与唐华仲物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第01334号</td>
+                    <td align="center">2014-08-19</td>
+                  </TR>
+                
+                  <TR
+												
+										class=tdbgs_odd
+										
+									>
+                    <td align="center">3</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887902.htm"
+													title="重庆园美物业管理有限公司与夏中平,程国芳物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆园美物业管理有限公司与夏中平,程国芳物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第01474号</td>
+                    <td align="center">2014-08-12</td>
+                  </TR>
+                
+                  <TR
+												
+										
+										class=tdbgs_even
+									>
+                    <td align="center">4</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887897.htm"
+													title="重庆园美物业管理有限公司与张竟,黄伟、余春花物业服务合同纠纷一审民事判决书(1)" target="_blank">
+                      重庆园美物业管理有限公司与张竟,黄伟、余春花物业服务合同纠纷一审民事判决书(1)
+                      </a></td>
+                    <td align="left">（2014）长法民初字第02938号</td>
+                    <td align="center">2014-07-10</td>
+                  </TR>
+                
+                  <TR
+												
+										class=tdbgs_odd
+										
+									>
+                    <td align="center">5</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887896.htm"
+													title="重庆园美物业管理有限公司与张竟,黄伟、余春花物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆园美物业管理有限公司与张竟,黄伟、余春花物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第02940号</td>
+                    <td align="center">2014-07-10</td>
+                  </TR>
+                
+                  <TR
+												
+										
+										class=tdbgs_even
+									>
+                    <td align="center">6</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887895.htm"
+													title="重庆园美物业管理有限公司与张竟,黄伟等物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆园美物业管理有限公司与张竟,黄伟等物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第02939号</td>
+                    <td align="center">2014-08-11</td>
+                  </TR>
+                
+                  <TR
+												
+										class=tdbgs_odd
+										
+									>
+                    <td align="center">7</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887874.htm"
+													title="重庆园美物业管理有限公司与袁国兰物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆园美物业管理有限公司与袁国兰物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第03590号</td>
+                    <td align="center">2014-08-11</td>
+                  </TR>
+                
+                  <TR
+												
+										
+										class=tdbgs_even
+									>
+                    <td align="center">8</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887846.htm"
+													title="重庆市凤城监狱与重庆长寿民生房地产开发有限公司房地产开发经营合同纠纷一审民事判决书" target="_blank">
+                      重庆市凤城监狱与重庆长寿民生房地产开发有限公司房地产开发经营合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2012）长法民初字第04119号</td>
+                    <td align="center">2014-01-23</td>
+                  </TR>
+                
+                  <TR
+												
+										class=tdbgs_odd
+										
+									>
+                    <td align="center">9</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887841.htm"
+													title="重庆市广润物业管理有限公司与高某甲物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆市广润物业管理有限公司与高某甲物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第03120号</td>
+                    <td align="center">2014-08-26</td>
+                  </TR>
+                
+                  <TR
+												
+										
+										class=tdbgs_even
+									>
+                    <td align="center">10</td>
+                    <td align="left">重庆市长寿区人民法院</td>
+                    <td align="left"><a href="http://www.court.gov.cn/zgcpwsw/cq/zqsdyzjrmfy/zqszsqrmfy/ms/201411/t20141104_3887838.htm"
+													title="重庆市楠丹物业管理有限公司与殷艺丹（殷俊）物业服务合同纠纷一审民事判决书" target="_blank">
+                      重庆市楠丹物业管理有限公司与殷艺丹（殷俊）物业服务合同纠纷一审民事判决书
+                      </a></td>
+                    <td align="left">（2014）长法民初字第02838号</td>
+                    <td align="center">2014-07-09</td>
+                  </TR>
+                
+              </TBODY>
+            </TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width="95%" align=center
+									border=0>
+              <TBODY>
+                <TR>
+                  <TD><DIV class=clsTRSNavigatorDIV style="MARGIN-LEFT: 2px">
+                    <SCRIPT>
+														if (!window.pageUrl) {
+															var curUrl = window.location.href;
+															var pageString = "page=1";
+															curUrl = curUrl.replace(pageString, "");
+															curUrl = curUrl.replace("?&", "?");
+															curUrl = curUrl.replace("&&", "&");
+															window.pageUrl = curUrl;
+														}
+														if (!window.pageUrlPre) {
+															var url = window.pageUrl;
+															if (url.indexOf("?") >= 0) {
+																var c = url.charAt(url.length - 1);
+																if (c == "?" || c == "&") {
+																	window.pageUrlPre = url + "page=";
+																} else {
+																	window.pageUrlPre = url + "&page=";
+																}
+															} else {
+																window.pageUrlPre = url + "?page=";
+															}
+														}
+
+														function isNatureNumber(s) {
+															if (!/^[0-9]+$/.test(s)) {
+																return false;
+															}
+															if (s.charAt(0) == 0) {
+																return false;
+															}
+															return true;
+														}
+														function gotoPage(form) {
+															var page = form.page.value;
+															if (!isNatureNumber(page)) {
+																alert("请输入合法页号！");
+																form.page.select();
+															} else {
+																self.location.href = window.pageUrlPre + form.page.value;
+															}
+														}
+													</SCRIPT>
+                    
+
+
+
+
+
+
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+	<TBODY>
+		<TR>
+			<TD noWrap><SCRIPT>
+		document.write("<form onsubmit='gotoPage(this);return false;'>");
+		document.write("<span style='color:black;'>共<strong>209755</strong>条记录&nbsp;&nbsp;");
+		document.write("<span style='color:black;'>共<strong>20976</strong>页&nbsp;&nbsp;当前第");
+		document.write("<strong>1</strong> 页&nbsp;&nbsp;");
+		document.write("<a href='" + window.pageUrlPre + "1'>");
+		document.write("<span class='otherPage' style='padding-top:3px;'>首页</span></a>&nbsp;");
+		
+	
+	
+	document.write("<span style='margin-bottom:5px;color:red;'>" + 1 + "</span> ");
+	
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 2 + "'>");
+	document.write("<span>" + 2 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 3 + "'>");
+	document.write("<span>" + 3 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 4 + "'>");
+	document.write("<span>" + 4 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 5 + "'>");
+	document.write("<span>" + 5 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 6 + "'>");
+	document.write("<span>" + 6 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 7 + "'>");
+	document.write("<span>" + 7 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 8 + "'>");
+	document.write("<span>" + 8 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 9 + "'>");
+	document.write("<span>" + 9 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 10 + "'>");
+	document.write("<span>" + 10 + "</span></a> ");
+			
+	
+	
+	
+	
+	document.write("<a href='" + window.pageUrlPre + 11 + "'>");
+	document.write("<span>" + 11 + "</span></a> ");
+			
+	
+	
+		document.write("<a href='" +  window.pageUrlPre + "20976'>");
+		document.write("<span>尾页</span></a>&nbsp;");
+		document.write("<input type='text' name='page' style='width:30px;'/>&nbsp;");
+		document.write("<input name='submit' type='submit' value='GO'/>");
+		document.write("</span></form>");
+		</SCRIPT></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+
+
+                    <BR></TD>
+                </TR>
+              </TBODY>
+            </TABLE>
+          
+          </td>
+      </TR>
+    </TBODY>
+  </TABLE>
+</div>
+<div id="footer" style="z-index:-1;">
+    <div id="links1"><a href="http://cpc.people.com.cn/" target="_blank">中国共产党新闻</a>　 <a href="http://www.npc.gov.cn/" target="_blank">全国人大</a>　 <a href="http://www.gov.cn/" target="_blank">中国政府网</a>　 <a href="http://www.cppcc.gov.cn" target="_blank">全国政协</a>　 <a href="http://www.spp.gov.cn" target="_blank">最高人民检察院</a></div>
+    <div id="links2"> <a href="http://www.court.gov.cn/zgcpwsw/lxwm/" target="_blank">联系我们</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://mail.court.gov.cn/" target="_blank">内部邮箱</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.court.gov.cn/gywm/" target="_blank">关于我们</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.court.gov.cn/wzdt/" target="_blank">网站地图</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:window.external.AddFavorite('http://www.court.gov.cn/zgcpwsw','中国裁判文书网')" target="_top">添加收藏</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="" onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://www.court.gov.cn/zgcpwsw');"title="设置本站为浏览器首页(起始页)">设为首页</a><br />
+    Copyrights©最高人民法院 All Rights Reserved<br />
+    未经本网书面授权，请勿转载、摘编或建立镜像，否则视为侵权。<br />
+    北京市东城区东交民巷27号 100745 总机:010-67550114 举报:010-67556131<br />
+    京ICP备05023036号 </div>
+  </div>
+</div>
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F692544717e4ca5489bff77b2e9b28e7b' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+<SCRIPT type=text/javascript>
+ Calendar.setup({
+        inputField     :    "startTime",      // id of the input field
+       	ifFormat	: "%Y-%m-%d",      // format of the input field
+        showsTime      :    false,            // will display a time selector
+        button         :    "f_trigger_b",   // trigger for the calendar (button ID)
+        singleClick    :    true,           
+        step           :    1,               // show all years in drop-down boxes (instead of every other year as default)
+        timeFormat	:"24"
+    });
+  Calendar.setup({
+        inputField     :    "endTime",      // id of the input field
+       	ifFormat	: "%Y-%m-%d",      // format of the input field
+        showsTime      :    false,            // will display a time selector
+        button         :    "f_trigger_b",   // trigger for the calendar (button ID)
+        singleClick    :    true,           
+        step           :    1,               // show all years in drop-down boxes (instead of every other year as default)
+        timeFormat	:"24"
+    });
+			$(function() {
+				$("#intro").mouseenter(function(){
+					$("#introbox").css("display","");
+				});
+				$("#intro").mouseleave(function(){
+					$("#introbox").css("display","none");
+				});
+
+			});
+			function viewProfit(id, day) {
+				new Ajax.Updater({
+					success : id
+				}, 'lineItem.do?action=getProfitByDay&beginDate=' + day);
+			}
+
+			function setOrder(field) {
+
+				$('#orderby').val(field);
+
+				var arrow = $.trim($('#' + field + "arrow").html());
+				if ('' == arrow || '↓' == arrow) {
+					$('#order').val('asc');
+				} else {
+					$('#order').val('desc');
+				}
+				$('#form1').submit();
+			}
+			$('#button').click(function() {
+				var keyword = $.trim($('#keyword').val());
+				var anhao = $.trim($('#anhao').val());
+				var anyou = $.trim($('#anyou').val());
+				var anjianleixing = $.trim($('#anjianleixing').val());
+				var wenshuleixing = $.trim($('#wenshuleixing').val());
+				var court = $.trim($('#court').val());
+				var startTime = $.trim($('#startTime').val());
+				var endTime = $.trim($('#endTime').val());
+				if (anhao == '' && keyword == '') {
+					alert('请输入关键词！');
+					$('#keyword').focus();
+					return;
+				}
+				if (anhao == '' && keyword.length < 2) {
+					alert('关键词需两个字以上');
+					$('#keyword').focus();
+					return;
+				}
+				var x = 0;//已输入查询条件数量
+				if (anhao == '') {
+					if (anyou != '') {
+						x++;
+					}
+					if (anjianleixing != '') {
+						x++;
+					}
+					if (court != '') {
+						x++;
+					}
+					if (endTime != '') {
+						x++;
+					}
+					if (wenshuleixing != '') {
+						x++;
+					}
+					if (x < 1) {
+						alert('请输入两个或两个以上条件进行检索！');
+						return;
+					}
+				}
+				$('#form1').submit();
+			});
+
+			document.onkeydown = function(event_e) {
+				if (window.event) {
+					event_e = window.event;
+				}
+
+				var int_keycode = event_e.charCode || event_e.keyCode;
+				if (int_keycode == '13') {
+					//your handler function,please.  
+					$('#button').click();
+					return false;
+				}
+			}
+		</SCRIPT>
+</body>
+</html>
+
