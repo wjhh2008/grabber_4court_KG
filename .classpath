@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="lib/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
-	<classpathentry kind="lib" path="/Users/user/Code/workspace/dom4j-1.6.1/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="/Users/user/Code/workspace/nekohtml-1.9.21/nekohtml.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/nekohtml.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

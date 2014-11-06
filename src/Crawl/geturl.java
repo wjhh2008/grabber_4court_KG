@@ -1,19 +1,13 @@
 package Crawl;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
 
 
 public class geturl {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		BufferedWriter writer = null;
-		
-		writer = new BufferedWriter(new FileWriter(new File("url.txt"), false));
 		
 		int startPage = Integer.valueOf(args[0]);
 		int endPage = Integer.valueOf(args[1]);
@@ -26,30 +20,15 @@ public class geturl {
 			System.out.println("-->  page"+page);
 			html = si.methodPa(s+page);
 			
-			
 			String url = SimpleCrawler.getUrl(html);
-			try {
-				writer.write(""+page+'\n');
-				writer.write(url);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			SimpleCrawler.writeInFile("url.txt", url);
+			if (page%100 == 0) {
+				SimpleCrawler.writeInFile("log.txt","page "+(page-100)+" - page "+page+" writed\n");
 			}
-	/*		int time = (int) Math.rint(Math.random()
-					* (Paremeters.ENDTIME - Paremeters.STARTTIME)
-					+ Paremeters.STARTTIME);
 			
-			try {
-				Thread.sleep(time * 100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
-			writer.flush();
 			
 		}
-		writer.close();
+		SimpleCrawler.writeInFile("log.txt","page "+startPage+" - page "+endPage+" writed and job finished\n");
 		
 		
 	}

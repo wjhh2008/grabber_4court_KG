@@ -187,12 +187,11 @@ public class SimpleCrawler{
 		httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(0, false));
 		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
 		httpClient.getHttpConnectionManager().getParams().setSoTimeout(3000); 
-		
 		BufferedReader br = null;
 		InputStream input = null;
 		GetMethod getMethod = null;
 		String html = "";
-		do{
+		for (int i=0;i<3;i++){
 			getMethod = new GetMethod(strURL);// 使用Get或post根据网页而定
 			int statusCode = 0;// 返回状态 200 404 500这种
 			
@@ -200,12 +199,10 @@ public class SimpleCrawler{
 			try {
 				statusCode = httpClient.executeMethod(getMethod);
 			} catch (HttpException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Connection HttpException");
 				continue;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Connection IOException");
 				continue;
 			}
 			
@@ -218,16 +215,7 @@ public class SimpleCrawler{
 						html = html + s + "\r\n";
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					try {
-						br.close();
-						input.close();
-						continue;
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					System.err.println("Get Data IOException");
 					html = "";
 					getMethod.releaseConnection();
 					continue;
@@ -239,7 +227,8 @@ public class SimpleCrawler{
 						br.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//e.printStackTrace();
+						System.err.println("Close IOException");
 					}
 				}
 				if (input != null) {
@@ -247,14 +236,15 @@ public class SimpleCrawler{
 						input.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//e.printStackTrace();
+						System.err.println("Close IOException");
 					}
 				}
 				break;
 			}else{
-				System.out.println("HttpStatus: "+statusCode);
+				System.err.println("HttpStatus: "+statusCode);
 			}
-		}while(true);
+		}
 
 		
 		getMethod.releaseConnection();
@@ -273,10 +263,7 @@ public class SimpleCrawler{
 			fileos = new FileOutputStream(filepath, true);
 			osw = new OutputStreamWriter(fileos, "utf-8");
 			bw = new BufferedWriter(osw);
-			if (!str.equals("")) {
-				bw.append(str);
-				bw.newLine();
-			}
+			bw.append(str);
 			bw.close();
 			osw.close();
 			fileos.close();
