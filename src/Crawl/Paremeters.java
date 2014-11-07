@@ -14,4 +14,5 @@ public class Paremeters {
 	static final int MAX_COUNT=236035;
 	static final String urlfile="全部入口url.txt";
 	static final String sourceFileDir="sourceFile"+File.separator;
+	static final int MAX_ITEM = 10000;
 }
