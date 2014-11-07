@@ -48,7 +48,7 @@ public class SimpleCrawler{
 
 		int startPage = Integer.valueOf(args[0]);
 		int endPage = Integer.valueOf(args[1]);
-		int i = 0;
+		int page = 0;
 		Document comp = null;
 		Document sup = null;
 		
@@ -56,8 +56,8 @@ public class SimpleCrawler{
 			is = new BufferedInputStream(new FileInputStream(file));
 			br = new BufferedReader(new InputStreamReader(is, "utf-8"));
 			while ((url = br.readLine()) != null && startPage <= endPage) {
-				i++;
-				if (i % Paremeters.MAX_ITEM == 1){
+				page++;
+				if (page % Paremeters.MAX_ITEM == 1){
 					comp = DocumentHelper.createDocument();
 					sup = DocumentHelper.createDocument();
 				}
@@ -113,7 +113,32 @@ public class SimpleCrawler{
 				//company.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 				//company.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 				
-				//Element shops = sup.addElement("shops");
+				Element shops = sup.addElement("shops");
+				String[] productgrp = matchstr(supplyhtml, "<ul class=\"fl-clr\">[\\s\\S]*<div class=\"pros-line\">", 0, 0).replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().split("\\s\\s+");
+				
+				for (int i=0;i<productgrp.length;i++){
+					Element producttype = shops.addAttribute("url", url).addElement("producttype").addText(matchstr(productgrp[i],">.*\\(",1,1));
+					System.out.println("-->productgrp "+i);
+					String pdurl = matchstr(productgrp[i],"href=.*rel",6,5);
+					
+					//int num = 0;
+					while(true){
+						String subtypehtml = si.methodPa(pdurl);
+						String[] producturl = SimpleCrawler.matchstr(subtypehtml,"class=\"desc\">\\s*<a.*?>",13,0).trim().split("\\s\\s+");
+						for (int j=0;j<producturl.length;j++){
+							String productpage = si.methodPa(SimpleCrawler.matchstr(producturl[j],"href=.*title=",6,8));
+							//num++;
+							break;
+						}
+						
+						pdurl = SimpleCrawler.matchstr(SimpleCrawler.matchstr(subtypehtml,"href\\S*\\s*\\S*rollPage.*>下一页",6,0),"^.*html",0,0);
+						
+						if (pdurl.equals("")) break;
+					}
+					//System.out.println(num);
+					break;
+					
+				}
 				//shops.addElement("shop").addAttribute("url", arg1)addText(matchstr(supplyhtml,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 				//shops.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 				//shops.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
@@ -130,7 +155,7 @@ public class SimpleCrawler{
 					System.out.println(e.getMessage());
 				}
 				
-				if (i % Paremeters.MAX_ITEM == 0){
+				if (page % Paremeters.MAX_ITEM == 0){
 					
 				}
 				
@@ -148,7 +173,7 @@ public class SimpleCrawler{
 	}
 	
 	public static String matchstr(String html, String regexp, int stoffs, int enoffs){
-		System.out.println("regexp: "+regexp);
+		//System.out.println("regexp: "+regexp);
 		Pattern p = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(html);
 		String str = "";
@@ -189,7 +214,7 @@ public class SimpleCrawler{
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new Header("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)"));
 		//headers.add(new Header("Cookie", "china_uv=66365e1884; Hm_lvt_3cfaa114cca90dbeb8cf6908074f92ef=1415327823; Hm_lpvt_3cfaa114cca90dbeb8cf6908074f92ef=1415328358; _ga=GA1.2.1863492324.1415327823; 9329132056=30020"));
-		headers.add(new Header("Referer", strURL));
+		if (strURL.matches("company-information.html")) headers.add(new Header("Referer", strURL));
 		
 		httpClient.getHostConfiguration().getParams().setParameter("http.default-headers", headers);  // 尽量添加headers，模拟浏览器
 		httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(0, false));
@@ -207,7 +232,7 @@ public class SimpleCrawler{
 			
 			getMethod = new GetMethod(strURL);// 使用Get或post根据网页而定
 			int statusCode = 0;// 返回状态 200 404 500这种
-			System.out.println("get..."+strURL);
+			//System.out.println("get..."+strURL);
 			try {
 				
 				statusCode = httpClient.executeMethod(getMethod);
@@ -258,6 +283,12 @@ public class SimpleCrawler{
 				break;
 			}else{
 				System.err.println("HttpStatus: "+statusCode);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				i++;
 			}
 		}
