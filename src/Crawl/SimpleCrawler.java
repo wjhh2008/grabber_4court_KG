@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,7 +161,7 @@ public class SimpleCrawler{
 								num++;
 								
 								System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-								System.out.printf("      Doing No.%-3d in Grp%-2d.",num,i);
+								System.out.printf("     Doing No.%-3d in Grp %-2d.",num,i);
 								String purl = SimpleCrawler.matchstr(producturl[j],"http[\\S]*html",0,0).trim();
 								if (purl.equals("")) System.err.println("Oh! empty URL from "+url+"/supply"+" @page_"+i+" num_"+num+" detail:"+producturl[j]);
 								Element product = producttype.addElement("product");
@@ -205,7 +203,7 @@ public class SimpleCrawler{
 						
 					}
 					System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-					System.out.printf("Done total %d in Grp(%2d).\n",total,productgrp.length);
+					System.out.printf("     Done total %d in Grp(%2d).\n",total,productgrp.length);
 					//System.out.println("   shops info finish crawling.");
 					
 					if (page % Paremeters.MAX_ITEM == 0){
@@ -357,7 +355,6 @@ public class SimpleCrawler{
 					try {
 						br.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						//e.printStackTrace();
 						System.err.print(" DataCerr");
 					}
@@ -366,7 +363,6 @@ public class SimpleCrawler{
 					try {
 						input.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						//e.printStackTrace();
 						System.err.print(" DataCerr");
 					}
@@ -378,7 +374,6 @@ public class SimpleCrawler{
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				i++;
@@ -408,7 +403,6 @@ public class SimpleCrawler{
 			fileos.close();
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
