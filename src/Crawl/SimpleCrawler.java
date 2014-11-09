@@ -161,7 +161,7 @@ public class SimpleCrawler{
 								num++;
 								
 								System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-								System.out.printf("     Doing No.%-3d in Grp %-2d.",num,i);
+								System.out.printf("    Doing No.%-4d in Grp %-2d.",num,i);
 								String purl = SimpleCrawler.matchstr(producturl[j],"http[\\S]*html",0,0).trim();
 								if (purl.equals("")) System.err.println("Oh! empty URL from "+url+"/supply"+" @page_"+i+" num_"+num+" detail:"+producturl[j]);
 								Element product = producttype.addElement("product");
@@ -203,7 +203,7 @@ public class SimpleCrawler{
 						
 					}
 					System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-					System.out.printf("     Done total %d in Grp(%2d).\n",total,productgrp.length);
+					System.out.printf("    Done total %d in Grp(%2d).\n",total,productgrp.length);
 					//System.out.println("   shops info finish crawling.");
 					
 					if (page % Paremeters.MAX_ITEM == 0){
