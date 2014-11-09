@@ -38,6 +38,13 @@ public class SimpleCrawler{
 	public static void main(String[] args){
 
 		SimpleCrawler si = new SimpleCrawler();
+		OutputFormat format = OutputFormat.createPrettyPrint();//缩减型格式
+			  		 format.setEncoding("UTF-8");//设置文件内部文字的编码
+			 		 format.setExpandEmptyElements(true);
+			 		 format.setTrimText(false);
+					 format.setIndent(true);      // 设置是否缩进
+					 format.setIndent("   ");     // 以空格方式实现缩进
+					 format.setNewlines(true);    // 设置是否换行
 		File filedir = new File(args[0]);
 		if (!filedir.exists()) {
 			System.err.println("Can't Find dir : "+filedir);
@@ -56,13 +63,6 @@ public class SimpleCrawler{
 				return;
 			}
 			
-			OutputFormat format = OutputFormat.createPrettyPrint();//缩减型格式
-						 format.setEncoding("UTF-8");//设置文件内部文字的编码
-						 format.setExpandEmptyElements(true);
-						 format.setTrimText(false);
-						 format.setIndent(true);      // 设置是否缩进
-						 format.setIndent("   ");     // 以空格方式实现缩进
-						 format.setNewlines(true);    // 设置是否换行
 	
 			InputStream is = null;
 			BufferedReader br = null;
@@ -112,7 +112,7 @@ public class SimpleCrawler{
 					company.addElement("url").addText(url);
 					
 					String compinfo = si.methodPa(url+"/company-information.html");
-					company.addElement("info").addText(matchstr(compinfo,"class=\"company-info\">\\s*<p>[^<]*</p>", 24, 4).trim());
+					company.addElement("info").addText(matchstr(compinfo,"class=\"company-info\">\\s*<p>.[^<]*</p>", 24, 4).trim());
 					company.addElement("business").addText(matchstr(compinfo, "主营产品或服务</th>\\s*<td.*>\\s*<a.*>[\\s\\S]*</a.*>\\s*</td.*>\\s*<th.*>主营行业", 7, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					company.addElement("range").addText(matchstr(compinfo, "主营行业</th>\\s*<td.*>\\s*<a.*>[\\s\\S]*</a.*>\\s*</td.*>", 4, 0).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					company.addElement("model").addText(matchstr(compinfo, "经营模式[\\s\\S]*主要客户群", 4, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
@@ -177,10 +177,10 @@ public class SimpleCrawler{
 								product.addElement("telephone").addText(matchstr(productpage,"手&nbsp;&nbsp;&nbsp;&nbsp;机[\\S\\s]*order-btn", 27, 21).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 								Element disinfo = product.addElement("disinfo");
 								String paragraph = SimpleCrawler.matchstr(productpage, "<!-- mod-detail end -->[\\s\\S]*<div class=\"text-detail\">", 0, 0);
-								String[] infoa = SimpleCrawler.matchstr(paragraph,"<th>[^<]*</th>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
-								String[] infob = SimpleCrawler.matchstr(paragraph,"<td>[^<]*</td>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
+								String[] infoa = SimpleCrawler.matchstr(paragraph,"<th>.[^<]*</th>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
+								String[] infob = SimpleCrawler.matchstr(paragraph,"<td>.[^<]*</td>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
 								
-								for (int k=0;k<Math.min(infoa.length,infoa.length);k++){
+								for (int k=0;k<Math.min(infoa.length,infob.length);k++){
 									disinfo.addElement(infoa[k]).addText(infob[k]);
 								}
 								
