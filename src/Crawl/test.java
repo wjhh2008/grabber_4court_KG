@@ -1,5 +1,7 @@
 package Crawl;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.PrintStream;
 
 
@@ -9,13 +11,11 @@ public class test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PrintStream p = System.out;
-		SimpleCrawler si = new SimpleCrawler();
+		/*SimpleCrawler si = new SimpleCrawler();
 		String html = si.methodPa("http://puluody.cn.china.cn/supply");
-		String subtypehtml = html;
+		String subtypehtml = html;*/
 		System.out.println("--------match begin--------");
-		String tmp = SimpleCrawler.matchstr(subtypehtml,"<ul class=\"fl-clr\">[\\s\\S]*<div class=\"pros-line\">", 0, 0).replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim();
-		p.println(tmp);
-		
+		System.out.printf("%4d", 1);
 		System.out.println("--------match end  --------");
 		
 	}
