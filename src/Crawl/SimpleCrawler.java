@@ -149,10 +149,19 @@ public class SimpleCrawler{
 					String[] productgrp = matchstr(supplyhtml, "<ul class=\"fl-clr\">[\\s\\S]*<div class=\"pros-line\">", 0, 0).replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().split("\\s\\s+");
 					int total = 0;
 					//System.out.print("      ");
+					
 					for (int i=0;i<productgrp.length;i++){
-						String ptypename = matchstr(productgrp[i],">[^<]*\\(",1,1).trim();
+						//System.err.println("Product grp: "+i+" "+productgrp[i]);
+						String ptypename = "";
+						String pdurl = "";
+						if (i==0&&productgrp[i].equals("")){
+							pdurl = url+"/supply";
+						}else{
+							ptypename = matchstr(productgrp[i],">[^<]*\\(",1,1).trim();
+							pdurl = matchstr(productgrp[i],"http[\\S]*html",0,0).trim();
+						}
 						Element producttype = shop.addAttribute("url", url.trim()).addElement("producttype").addAttribute("name", ptypename);
-						String pdurl = matchstr(productgrp[i],"http[\\S]*html",0,0).trim();
+						
 						int num = 0;
 						while(true){
 							String subtypehtml = si.methodPa(pdurl);
@@ -161,7 +170,7 @@ public class SimpleCrawler{
 								num++;
 								
 								System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-								System.out.printf("     Doing No.%-3d in Grp %-2d.",num,i);
+								System.out.printf("    Doing No.%-4d in Grp %-2d.",num,i+1);
 								String purl = SimpleCrawler.matchstr(producturl[j],"http[\\S]*html",0,0).trim();
 								if (purl.equals("")) System.err.println("Oh! empty URL from "+url+"/supply"+" @page_"+i+" num_"+num+" detail:"+producturl[j]);
 								Element product = producttype.addElement("product");
@@ -202,8 +211,8 @@ public class SimpleCrawler{
 						total = total + num;
 						
 					}
-					System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-					System.out.printf("     Done total %d in Grp(%2d).\n",total,productgrp.length);
+					System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
+					System.out.printf("    Done total %d in Grp(%2d).\n",total,productgrp.length);
 					//System.out.println("   shops info finish crawling.");
 					
 					if (page % Paremeters.MAX_ITEM == 0){
@@ -218,6 +227,7 @@ public class SimpleCrawler{
 							XMLcompanys.close();
 							XMLshops.write(sup);
 							XMLshops.close();
+
 							System.out.println(filename+" "+PAGE + " XML done");
 						} catch (IOException e) {
 							System.out.println(e.getMessage());
@@ -227,7 +237,7 @@ public class SimpleCrawler{
 					//page++;
 				}
 				
-				if (page>startPage){
+				if (page>=startPage){
 					String DIRR = outdir+File.separator;
 					String PAGE = startPage+"-" + page;
 			        startPage = page+1;
@@ -245,6 +255,7 @@ public class SimpleCrawler{
 					}
 					
 				}
+				br.close();
 				is.close();
 	
 			} catch (IOException e) {
