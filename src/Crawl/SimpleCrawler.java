@@ -33,7 +33,7 @@ import org.dom4j.io.XMLWriter;
 
 public class SimpleCrawler{  
 	
-	HttpClient httpClient;
+	
 	
 	public static void main(String[] args){
 
@@ -50,12 +50,20 @@ public class SimpleCrawler{
 			System.err.println("Can't Find dir : "+filedir);
 			return;
 		}
+		int pageesp = 0;
+		if (args.length>1){
+			pageesp = Integer.parseInt(args[1]);
+		}
 		String [] filelist = filedir.list();
 		for (int n=0;n<filelist.length;n++){
 			String filename = filelist[n];
+			int startPage = 1;
+			int page = 0;
 			if (matchstr(filename,"\\.txt",0,0).equals("")){
 				continue;
 			}
+			startPage = startPage + pageesp;
+			pageesp = 0;
 			File file = new File(filedir+File.separator+filename);
 			File outdir  = new File(filedir+File.separator+filename.replaceAll("\\.[\\S]*$", ""));
 			if (!(outdir.exists()||outdir.mkdir())) {
@@ -67,8 +75,7 @@ public class SimpleCrawler{
 			InputStream is = null;
 			BufferedReader br = null;
 			String url;
-			int startPage = 1;
-			int page = 0;
+			
 			Document comp = null;
 			Document sup = null;
 			Element companys = null;
@@ -212,7 +219,7 @@ public class SimpleCrawler{
 						
 					}
 					System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-					System.out.printf("    Done total %d in Grp(%2d).\n",total,productgrp.length);
+					System.out.printf("    Done total %d in Grp %2d.\n",total,productgrp.length);
 					//System.out.println("   shops info finish crawling.");
 					
 					if (page % Paremeters.MAX_ITEM == 0){
@@ -309,8 +316,7 @@ public class SimpleCrawler{
 		System.getProperties().setProperty("proxySet", "true");// 设置代理IP，防止ip被封
 		//for cookies
 		DefaultHttpParams.getDefaultParams().setParameter("http.protocol.cookie-policy", CookiePolicy.BROWSER_COMPATIBILITY);
-		
-		httpClient = new HttpClient();
+		HttpClient httpClient =  new HttpClient();
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new Header("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)"));
 		//headers.add(new Header("Cookie", "china_uv=66365e1884; Hm_lvt_3cfaa114cca90dbeb8cf6908074f92ef=1415327823; Hm_lpvt_3cfaa114cca90dbeb8cf6908074f92ef=1415328358; _ga=GA1.2.1863492324.1415327823; 9329132056=30020"));
@@ -380,7 +386,7 @@ public class SimpleCrawler{
 				}
 				break;
 			}else{
-				System.err.print(" "+statusCode);
+				if (statusCode!=503) System.err.print(" "+statusCode);
 				
 				try {
 					Thread.sleep(300);
