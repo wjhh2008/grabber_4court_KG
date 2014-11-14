@@ -33,8 +33,13 @@ import org.dom4j.io.XMLWriter;
 
 public class SimpleCrawler{  
 	
-	
-	
+	String charset;
+	public SimpleCrawler(){
+		this.charset = "gbk";
+	}
+	public SimpleCrawler(String charset){
+		this.charset = charset;
+	}
 	public static void main(String[] args){
 
 		SimpleCrawler si = new SimpleCrawler();
@@ -55,6 +60,13 @@ public class SimpleCrawler{
 			pageesp = Integer.parseInt(args[1]);
 		}
 		String [] filelist = filedir.list();
+		int txtdone = 0;
+		int txtdo = 0;
+		for (int n=0;n<filelist.length;n++){
+			if (matchstr(filelist[n],"\\.txt",0,0).equals("")){
+				txtdone++;
+			}
+		}
 		for (int n=0;n<filelist.length;n++){
 			String filename = filelist[n];
 			int startPage = 1;
@@ -62,6 +74,7 @@ public class SimpleCrawler{
 			if (matchstr(filename,"\\.txt",0,0).equals("")){
 				continue;
 			}
+			txtdo++;
 			startPage = startPage + pageesp;
 			pageesp = 0;
 			File file = new File(filedir+File.separator+filename);
@@ -105,13 +118,13 @@ public class SimpleCrawler{
 			 */
 					String mainhtml = si.methodPa(url);
 					if(mainhtml.equals("")){
-						System.out.println("   content save fail...continue next...");
+						System.out.println("(*)Page"+page+" Html is null...continue next...");
 						continue;
 					}
 					
-					System.out.print("[%");
-					System.out.printf("%-2d]",100*n/filelist.length);
-					System.out.println(" Start "+filename+"  Page "+page+ "  ...");
+					System.out.print("%");
+					System.out.printf("%d ",100*(txtdo+txtdone)/filelist.length);
+					System.out.println("Start "+filename+"  Page "+page+ "  ...");
 					
 					
 					Element company = companys.addElement("company");
@@ -158,6 +171,8 @@ public class SimpleCrawler{
 					//System.out.print("      ");
 					
 					for (int i=0;i<productgrp.length;i++){
+						
+						if (i<4) continue;
 						//System.err.println("Product grp: "+i+" "+productgrp[i]);
 						String ptypename = "";
 						String pdurl = "";
@@ -197,7 +212,7 @@ public class SimpleCrawler{
 								String[] infob = SimpleCrawler.matchstr(paragraph,"<td>.[^<]*</td>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
 								
 								for (int k=0;k<Math.min(infoa.length,infob.length);k++){
-									disinfo.addElement(infoa[k]).addText(infob[k]);
+									disinfo.addElement(infoa[k].replaceAll("[\\x00-\\xff]", "")).addText(infob[k]);
 								}
 								
 								String[] recommends = SimpleCrawler.matchstr(productpage, "desc\"><a[^>]*>[^<]*</a>", 6, 0).trim().split("\\n+");
@@ -219,7 +234,7 @@ public class SimpleCrawler{
 						
 					}
 					System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-					System.out.printf("    Done total %d in Grp %2d.\n",total,productgrp.length);
+					System.out.printf("    Done total %d in Grp %d.\n",total,productgrp.length);
 					//System.out.println("   shops info finish crawling.");
 					
 					if (page % Paremeters.MAX_ITEM == 0){
@@ -327,64 +342,56 @@ public class SimpleCrawler{
 		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
 		httpClient.getHttpConnectionManager().getParams().setSoTimeout(10000); 
 		httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
-		
+
 		//System.out.println(strURL);
 		BufferedReader br = null;
 		InputStream input = null;
 		GetMethod getMethod = null;
 		String html = "";
+		int networkdowncount = 0;
 		for (int i=0;i<3;){
+			networkdowncount = (networkdowncount+1)%(10*30);
+			int wait = networkdowncount / 5;
+			if (wait>0){
+				try {
+					Thread.sleep(wait*500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			getMethod = new GetMethod(strURL);
+			getMethod.setRequestHeader("Connection", "close"); 
 			
-			
-			getMethod = new GetMethod(strURL);// 使用Get或post根据网页而定
-			int statusCode = 0;// 返回状态 200 404 500这种
-			//System.out.println("get..."+strURL);
+			int statusCode = 0;
 			try {
-				
 				statusCode = httpClient.executeMethod(getMethod);
 			} catch (HttpException e) {
 				System.err.print(" NETerr");
+				getMethod.releaseConnection();
 				continue;
 			} catch (IOException e) {
-				System.err.print(" NETerr");
+				System.err.print(" NETIOerr");
 				//e.printStackTrace();
+				getMethod.releaseConnection();
 				continue;
 			}
-			
+			networkdowncount = 0;
 			if (statusCode == HttpStatus.SC_OK) {
 				try {
-					//html = getMethod.getResponseBodyAsString();
 					input = getMethod.getResponseBodyAsStream();
-					br = new BufferedReader(new InputStreamReader(input,"gbk"));
+					br = new BufferedReader(new InputStreamReader(input,charset));
 					String s = "";
 					while ((s = br.readLine()) != null) {
 						html = html + s + "\r\n";
 					}
+					br.close();
+					input.close();
+					break;
 				} catch (IOException e) {
 					System.err.print(" Dataerr");
 					html = "";
 					getMethod.releaseConnection();
-					continue;
 				}
-				
-	
-				if (br != null) {
-					try {
-						br.close();
-					} catch (IOException e) {
-						//e.printStackTrace();
-						System.err.print(" DataCerr");
-					}
-				}
-				if (input != null) {
-					try {
-						input.close();
-					} catch (IOException e) {
-						//e.printStackTrace();
-						System.err.print(" DataCerr");
-					}
-				}
-				break;
 			}else{
 				if (statusCode!=503) System.err.print(" "+statusCode);
 				
@@ -393,11 +400,10 @@ public class SimpleCrawler{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
 				i++;
 			}
 		}
-
-		
 		getMethod.releaseConnection();
 		return html;
 	}
