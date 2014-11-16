@@ -2,7 +2,6 @@ package Crawl;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +19,8 @@ import org.dom4j.io.XMLWriter;
 
 public class chinagov {
 	
+	private static BufferedReader urlfile;
+
 	public static void main(String[] args) throws IOException {
 		SimpleCrawler si = new SimpleCrawler("utf-8");
 		OutputFormat format = OutputFormat.createCompactFormat();//缩减型格式
@@ -30,7 +31,7 @@ public class chinagov {
 					// format.setIndent("   ");     // 以空格方式实现缩进
 					// format.setNewlines(true);    // 设置是否换行
 		File file = new File("govurl.txt");
-		BufferedReader urlfile = new BufferedReader(new FileReader(file));
+		urlfile = new BufferedReader(new FileReader(file));
 		String url;
 		PrintStream p = new PrintStream(System.out);
 		int line = 0,start = 1;
@@ -105,6 +106,7 @@ public class chinagov {
 				e.printStackTrace();
 			}
 		}
+		urlfile.close();
 		
 		
 

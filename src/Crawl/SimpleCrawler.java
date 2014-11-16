@@ -34,6 +34,7 @@ import org.dom4j.io.XMLWriter;
 public class SimpleCrawler{  
 	
 	String charset;
+	static int state = 0;
 	public SimpleCrawler(){
 		this.charset = "gbk";
 	}
@@ -67,6 +68,10 @@ public class SimpleCrawler{
 				txtdone++;
 			}
 		}
+		state = 100*(txtdo+txtdone)/filelist.length;
+		(new Thread(new PushState(args[0]))).start();  
+        
+		long lastDate = System.currentTimeMillis();
 		for (int n=0;n<filelist.length;n++){
 			String filename = filelist[n];
 			int startPage = 1;
@@ -75,6 +80,7 @@ public class SimpleCrawler{
 				continue;
 			}
 			txtdo++;
+			state = 100*(txtdo+txtdone)/filelist.length;
 			startPage = startPage + pageesp;
 			pageesp = 0;
 			File file = new File(filedir+File.separator+filename);
@@ -101,6 +107,11 @@ public class SimpleCrawler{
 					if (page<startPage){
 						continue;
 					}
+					long nowDate = System.currentTimeMillis();
+					if ((nowDate-lastDate)>1000*60*10){
+						nowDate = lastDate;
+						(new Thread(new PushState(args[0]))).start();  
+					}
 					url = matchstr(url,"[a-zA-z]+://[^\\s]*",0,0).trim();
 					if (page==startPage){
 						comp = DocumentHelper.createDocument();
@@ -123,7 +134,7 @@ public class SimpleCrawler{
 					}
 					
 					System.out.print("%");
-					System.out.printf("%d ",100*(txtdo+txtdone)/filelist.length);
+					System.out.printf("%d ",state);
 					System.out.println("Start "+filename+"  Page "+page+ "  ...");
 					
 					
@@ -170,9 +181,7 @@ public class SimpleCrawler{
 					int total = 0;
 					//System.out.print("      ");
 					
-					for (int i=0;i<productgrp.length;i++){
-						
-						if (i<4) continue;
+					for (int i=0;i<productgrp.length;i++){		
 						//System.err.println("Product grp: "+i+" "+productgrp[i]);
 						String ptypename = "";
 						String pdurl = "";
@@ -370,8 +379,8 @@ public class SimpleCrawler{
 				getMethod.releaseConnection();
 				continue;
 			} catch (IOException e) {
-				System.err.print(" NETIOerr");
-				//e.printStackTrace();
+				//System.err.print(" NETIOerr");
+				e.printStackTrace();
 				getMethod.releaseConnection();
 				continue;
 			}
@@ -402,6 +411,7 @@ public class SimpleCrawler{
 				}
 				
 				i++;
+				networkdowncount--;
 			}
 		}
 		getMethod.releaseConnection();
