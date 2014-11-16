@@ -35,11 +35,18 @@ public class chinagov {
 		String url;
 		PrintStream p = new PrintStream(System.out);
 		int line = 0,start = 1;
+		if (args.length>0){
+			start += Integer.parseInt(args[0]);
+		}
 		Document doc = null;
 		Element cs = null;
 		while ((url = urlfile.readLine()) != null){
 			line++;
 			p.printf("Line %-7d ...", line); //16
+			if (line<start) {
+				p.print("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
+				continue;
+			}
 			if (line==start){
 				doc = DocumentHelper.createDocument();
 				cs = doc.addElement("consultation");

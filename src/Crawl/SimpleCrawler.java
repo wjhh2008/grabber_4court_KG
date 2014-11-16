@@ -20,6 +20,7 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;  
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.DefaultHttpParams;
@@ -34,7 +35,9 @@ import org.dom4j.io.XMLWriter;
 public class SimpleCrawler{  
 	
 	String charset;
-	static int state = 0;
+	static double state = 0;
+	static MultiThreadedHttpConnectionManager connectionManager =
+			new MultiThreadedHttpConnectionManager();
 	public SimpleCrawler(){
 		this.charset = "gbk";
 	}
@@ -68,7 +71,7 @@ public class SimpleCrawler{
 				txtdone++;
 			}
 		}
-		state = 100*(txtdo+txtdone)/filelist.length;
+		state = 100*(txtdo+txtdone)*1.00/filelist.length;
 		(new Thread(new PushState(args[0]))).start();  
         
 		long lastDate = System.currentTimeMillis();
@@ -80,7 +83,7 @@ public class SimpleCrawler{
 				continue;
 			}
 			txtdo++;
-			state = 100*(txtdo+txtdone)/filelist.length;
+			state = 100*(txtdo+txtdone)*1.00/filelist.length;
 			startPage = startPage + pageesp;
 			pageesp = 0;
 			File file = new File(filedir+File.separator+filename);
@@ -109,7 +112,7 @@ public class SimpleCrawler{
 					}
 					long nowDate = System.currentTimeMillis();
 					if ((nowDate-lastDate)>1000*60*10){
-						nowDate = lastDate;
+						lastDate = nowDate;
 						(new Thread(new PushState(args[0]))).start();  
 					}
 					url = matchstr(url,"[a-zA-z]+://[^\\s]*",0,0).trim();
@@ -134,7 +137,7 @@ public class SimpleCrawler{
 					}
 					
 					System.out.print("%");
-					System.out.printf("%d ",state);
+					System.out.printf("%.1f ",state);
 					System.out.println("Start "+filename+"  Page "+page+ "  ...");
 					
 					
@@ -340,7 +343,7 @@ public class SimpleCrawler{
 		System.getProperties().setProperty("proxySet", "true");// 设置代理IP，防止ip被封
 		//for cookies
 		DefaultHttpParams.getDefaultParams().setParameter("http.protocol.cookie-policy", CookiePolicy.BROWSER_COMPATIBILITY);
-		HttpClient httpClient =  new HttpClient();
+		HttpClient httpClient =  new HttpClient(connectionManager);
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new Header("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)"));
 		//headers.add(new Header("Cookie", "china_uv=66365e1884; Hm_lvt_3cfaa114cca90dbeb8cf6908074f92ef=1415327823; Hm_lpvt_3cfaa114cca90dbeb8cf6908074f92ef=1415328358; _ga=GA1.2.1863492324.1415327823; 9329132056=30020"));
@@ -348,8 +351,8 @@ public class SimpleCrawler{
 		
 		httpClient.getHostConfiguration().getParams().setParameter("http.default-headers", headers);  // 尽量添加headers，模拟浏览器
 		httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(0, false));
-		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-		httpClient.getHttpConnectionManager().getParams().setSoTimeout(10000); 
+		//httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
+		//httpClient.getHttpConnectionManager().getParams().setSoTimeout(10000); 
 		httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 
 		//System.out.println(strURL);
@@ -403,7 +406,7 @@ public class SimpleCrawler{
 				}
 			}else{
 				if (statusCode!=503) System.err.print(" "+statusCode);
-				
+				getMethod.releaseConnection();
 				try {
 					Thread.sleep(300);
 				} catch (InterruptedException e) {
