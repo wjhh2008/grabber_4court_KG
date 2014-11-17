@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +41,20 @@ public class SimpleCrawler{
 	static double state = 0;
 	static MultiThreadedHttpConnectionManager connectionManager =
 			new MultiThreadedHttpConnectionManager();
+	private static long lastDate;
+	private static String infilename;
 	public SimpleCrawler(){
 		this.charset = "gbk";
 	}
 	public SimpleCrawler(String charset){
 		this.charset = charset;
+	}
+	private static void update(){
+		long nowDate = System.currentTimeMillis();
+		if ((nowDate-lastDate)>1000*60*10){
+			lastDate = nowDate;
+			(new Thread(new PushState(infilename))).start();  
+		}
 	}
 	public static void main(String[] args){
 
@@ -54,6 +66,7 @@ public class SimpleCrawler{
 					 format.setIndent(true);      // 设置是否缩进
 					 format.setIndent("   ");     // 以空格方式实现缩进
 					 format.setNewlines(true);    // 设置是否换行
+		infilename = args[0];
 		File filedir = new File(args[0]);
 		if (!filedir.exists()) {
 			System.err.println("Can't Find dir : "+filedir);
@@ -64,17 +77,35 @@ public class SimpleCrawler{
 			pageesp = Integer.parseInt(args[1]);
 		}
 		String [] filelist = filedir.list();
-		int txtdone = 0;
-		int txtdo = 0;
+		//int txtdone = 0;
+		//int txtdo = 0;
+		int totlepages = 0;
+		int pagedone = 0;
 		for (int n=0;n<filelist.length;n++){
 			if (matchstr(filelist[n],"\\.txt",0,0).equals("")){
-				txtdone++;
+				//txtdone++;
+			}else{
+				FileReader filerd = null;
+				try {
+					filerd = new FileReader(new File(filedir+File.separator+filelist[n]));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				LineNumberReader lnr = new LineNumberReader(filerd);
+				try {
+					while ((lnr.readLine()) != null) {
+						totlepages++;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		state = 100*(txtdo+txtdone)*1.00/filelist.length;
-		(new Thread(new PushState(args[0]))).start();  
+		System.out.println("Totle "+totlepages+" Pages.");
+		//state = 100*(txtdo+txtdone)*1.00/filelist.length;
+		//(new Thread(new PushState(args[0]))).start();  
         
-		long lastDate = System.currentTimeMillis();
+		lastDate = System.currentTimeMillis();
 		for (int n=0;n<filelist.length;n++){
 			String filename = filelist[n];
 			int startPage = 1;
@@ -82,8 +113,7 @@ public class SimpleCrawler{
 			if (matchstr(filename,"\\.txt",0,0).equals("")){
 				continue;
 			}
-			txtdo++;
-			state = 100*(txtdo+txtdone)*1.00/filelist.length;
+			//txtdo++;
 			startPage = startPage + pageesp;
 			pageesp = 0;
 			File file = new File(filedir+File.separator+filename);
@@ -107,14 +137,16 @@ public class SimpleCrawler{
 				br = new BufferedReader(new InputStreamReader(is, "utf-8"));
 				while ((url = br.readLine()) != null) {
 					page++;
+					pagedone++;
+					state = 100.00*pagedone/totlepages;
 					if (page<startPage){
 						continue;
 					}
-					long nowDate = System.currentTimeMillis();
-					if ((nowDate-lastDate)>1000*60*10){
-						lastDate = nowDate;
-						(new Thread(new PushState(args[0]))).start();  
-					}
+					
+					System.out.printf("[%.1f",state);
+					System.out.print("%] ");
+					System.out.println("Start \""+filename+"\"  Page "+page+ "  ...");
+					
 					url = matchstr(url,"[a-zA-z]+://[^\\s]*",0,0).trim();
 					if (page==startPage){
 						comp = DocumentHelper.createDocument();
@@ -135,11 +167,6 @@ public class SimpleCrawler{
 						System.out.println("(*)Page"+page+" Html is null...continue next...");
 						continue;
 					}
-					
-					System.out.print("%");
-					System.out.printf("%.1f ",state);
-					System.out.println("Start "+filename+"  Page "+page+ "  ...");
-					
 					
 					Element company = companys.addElement("company");
 					company.addElement("id").addText(matchstr(mainhtml, "class=\"pdmd\">\\s*\\S*\\s*<", 13, 1).trim());
@@ -201,8 +228,8 @@ public class SimpleCrawler{
 							String subtypehtml = si.methodPa(pdurl);
 							String[] producturl = SimpleCrawler.matchstr(subtypehtml,"class=\"desc\">\\s*<a.*?>",13,0).trim().split(">[\\s]*<");
 							for (int j=0;j<producturl.length;j++){
+								update();
 								num++;
-								
 								System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
 								System.out.printf("    Doing No.%-4d in Grp %-2d.",num,i+1);
 								String purl = SimpleCrawler.matchstr(producturl[j],"http[\\S]*html",0,0).trim();
