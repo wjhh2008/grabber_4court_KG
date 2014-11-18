@@ -232,8 +232,8 @@ public class SimpleCrawler{
 								num++;
 								System.out.printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
 								System.out.printf("    Doing No.%-4d in Grp %-2d.",num,i+1);
-								String purl = SimpleCrawler.matchstr(producturl[j],"http[\\S]*html",0,0).trim();
-								if (purl.equals("")) System.err.println("Oh! empty URL from "+url+"/supply"+" @page_"+i+" num_"+num+" detail:"+producturl[j]);
+								String purl = SimpleCrawler.matchstr(producturl[j],"href=\"http[\\S]*html",6,0).trim();
+								if (purl.equals("")) System.err.println("Oh! empty URL from "+url+"/supply"+" @page_"+(i+1)+" num_"+(num+1)+" detail:"+producturl[j]);
 								Element product = producttype.addElement("product");
 								product.addElement("url").addText(purl);
 								product.addElement("shopurl").addText(url);
@@ -363,7 +363,7 @@ public class SimpleCrawler{
 	}
 	
 	public String methodPa(String strURL){
-		if (strURL.equals("")){
+		if (!strURL.matches("http[\\S]*")){
 			//System.out.println("URL enpty!");
 			return "";
 		}
@@ -389,34 +389,25 @@ public class SimpleCrawler{
 		String html = "";
 		int networkdowncount = 0;
 		for (int i=0;i<3;){
-			networkdowncount = (networkdowncount+1)%(10*30);
-			int wait = networkdowncount / 5;
+			networkdowncount = networkdowncount+1-i;
+			int wait = networkdowncount/5;
+			if (wait >60) wait = 60;
 			if (wait>0){
 				try {
+					System.err.println("waitting "+wait*0.5);
 					Thread.sleep(wait*500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			getMethod = new GetMethod(strURL);
-			getMethod.setRequestHeader("Connection", "close"); 
+			//getMethod.setRequestHeader("Connection", "close"); 
 			
 			int statusCode = 0;
 			try {
 				statusCode = httpClient.executeMethod(getMethod);
-			} catch (HttpException e) {
-				System.err.print(" NETerr");
-				getMethod.releaseConnection();
-				continue;
-			} catch (IOException e) {
-				//System.err.print(" NETIOerr");
-				e.printStackTrace();
-				getMethod.releaseConnection();
-				continue;
-			}
-			networkdowncount = 0;
-			if (statusCode == HttpStatus.SC_OK) {
-				try {
+				networkdowncount = 0;
+				if (statusCode == HttpStatus.SC_OK) {
 					input = getMethod.getResponseBodyAsStream();
 					br = new BufferedReader(new InputStreamReader(input,charset));
 					String s = "";
@@ -426,25 +417,26 @@ public class SimpleCrawler{
 					br.close();
 					input.close();
 					break;
-				} catch (IOException e) {
-					System.err.print(" Dataerr");
-					html = "";
-					getMethod.releaseConnection();
+				}else{
+		
+					if (statusCode!=503){
+						System.err.println(statusCode);
+						if (statusCode==404) i++;
+					}
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}else{
-				if (statusCode!=503) System.err.print(" "+statusCode);
+			} catch (HttpException e) {
+				System.err.println("NETerr");
+			} catch (IOException e) {
+				System.err.println("NETIOerr");
+			} finally{
 				getMethod.releaseConnection();
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				
-				i++;
-				networkdowncount--;
 			}
 		}
-		getMethod.releaseConnection();
 		return html;
 	}
 
