@@ -53,6 +53,8 @@ public class PushState implements Runnable {
 			headers.add(new Header("charset","utf-8"));
 			headers.add(new Header("X-ApiKey","Wn6Cs6OuTACpKGlssPnOajl1sgsx0byLhgheUzl1MrI0tRbD"));
 			client.getHostConfiguration().getParams().setParameter("http.default-headers", headers);
+			client.getHttpConnectionManager().getParams().setConnectionTimeout(10000);
+			client.getHttpConnectionManager().getParams().setSoTimeout(20000); 
 			
 			try {
 				String xml = upxml.asXML();

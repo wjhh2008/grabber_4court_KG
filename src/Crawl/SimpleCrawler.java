@@ -33,6 +33,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.jsoup.Jsoup;
 
 
 public class SimpleCrawler{  
@@ -151,8 +152,8 @@ public class SimpleCrawler{
 					if (page==startPage){
 						comp = DocumentHelper.createDocument();
 						sup = DocumentHelper.createDocument();
-						companys = comp.addElement("companys");
-						shops = sup.addElement("shops");
+						companys = comp.addElement("Companys");
+						shops = sup.addElement("Shops");
 					}
 					//System.out.printf("   Page %4d",page);
 			/*					
@@ -168,45 +169,73 @@ public class SimpleCrawler{
 						continue;
 					}
 					
-					Element company = companys.addElement("company");
-					company.addElement("id").addText(matchstr(mainhtml, "class=\"pdmd\">\\s*\\S*\\s*<", 13, 1).trim());
-					company.addElement("url").addText(url);
+					Element company = companys.addElement("Company");
+					company.addElement("Name").addText(matchstr(mainhtml, "class=\"pdmd\">\\s*\\S*\\s*<", 13, 1).trim());
+					company.addElement("WebSite").addText(url);
 					
 					String compinfo = si.methodPa(url+"/company-information.html");
-					company.addElement("info").addText(matchstr(compinfo,"class=\"company-info\">\\s*<p>.[^<]*</p>", 24, 4).trim());
-					company.addElement("business").addText(matchstr(compinfo, "主营产品或服务</th>\\s*<td.*>\\s*<a.*>[\\s\\S]*</a.*>\\s*</td.*>\\s*<th.*>主营行业", 7, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("range").addText(matchstr(compinfo, "主营行业</th>\\s*<td.*>\\s*<a.*>[\\s\\S]*</a.*>\\s*</td.*>", 4, 0).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("model").addText(matchstr(compinfo, "经营模式[\\s\\S]*主要客户群", 4, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("registered").addText(matchstr(compinfo, "注册资本</th>[\\s\\S]*公司注册地", 4, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("founding_time").addText(matchstr(compinfo, "公司成立时间</th>[\\s\\S]*主营产品或服务", 6, 7).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("area").addText(matchstr(compinfo,"公司注册地</th>[\\s\\S]*公司注册号", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("organization").addText(matchstr(compinfo,"企业类型</th>[\\s\\S]*注册资本", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("artificialpersion").addText(matchstr(compinfo,"法定代表人/负责人</th>[\\s\\S]*公司成立时间", 9, 6).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("register_number").addText(matchstr(compinfo,"公司注册号</th>[\\s\\S]*经营范围", 5, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("sales_area").addText(matchstr(compinfo,"主要市场</th>[\\s\\S]*主要经营", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("customers").addText(matchstr(compinfo,"主要客户群</th>[\\s\\S]*主要市场", 5, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("turnover").addText(matchstr(compinfo,"年营业额</th>[\\s\\S]*年出口额", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("brandname").addText(matchstr(compinfo,"品牌名称</th>[\\s\\S]*经营模式", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("warehouse").addText(matchstr(compinfo,"主要经营地点</th>[\\s\\S]*年营业额", 6, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("services");
-					company.addElement("staff").addText(matchstr(compinfo,"员工人数</th>[\\s\\S]*厂房面积", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("exports");
-					company.addElement("agent");
-					company.addElement("website").addText(matchstr(compinfo,"公司网址</th>[\\s\\S]*是否", 4, 2).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("alibabashop");
-					company.addElement("contact-name").addText(matchstr(compinfo,"联系人:[\\s\\S]*职", 4, 1).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Info").addText(matchstr(compinfo,"class=\"company-info\">\\s*<p>.[^<]*</p>", 24, 4).trim());
+					company.addElement("Business").addText(matchstr(compinfo, "主营产品或服务</th>\\s*<td.*>\\s*<a.*>[\\s\\S]*</a.*>\\s*</td.*>\\s*<th.*>主营行业", 7, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("BusinessRange").addText(matchstr(compinfo, "主营行业</th>\\s*<td.*>\\s*<a.*>[\\s\\S]*</a.*>\\s*</td.*>", 4, 0).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("BusinessModel").addText(matchstr(compinfo, "经营模式[\\s\\S]*主要客户群", 4, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("RegisteredCapital").addText(matchstr(compinfo, "注册资本</th>[\\s\\S]*公司注册地", 4, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("FoundingTime").addText(matchstr(compinfo, "公司成立时间</th>[\\s\\S]*主营产品或服务", 6, 7).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("LocatedIn").addText(matchstr(compinfo,"公司注册地</th>[\\s\\S]*公司注册号", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("OrgType").addText(matchstr(compinfo,"企业类型</th>[\\s\\S]*注册资本", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("ArtificialPersion").addText(matchstr(compinfo,"法定代表人/负责人</th>[\\s\\S]*公司成立时间", 9, 6).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("RegisterNumber").addText(matchstr(compinfo,"公司注册号</th>[\\s\\S]*<th>经营范围", 5, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("BusinessRange").addText(matchstr(compinfo,"经营范围</th>[\\s\\S]*登记机关", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("RegisterAgency").addText(matchstr(compinfo,"登记机关</th>[\\s\\S]*最近年检时间", 4, 6).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("SalesArea").addText(matchstr(compinfo,"主要市场</th>[\\s\\S]*主要经营", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Customer").addText(matchstr(compinfo,"主要客户群</th>[\\s\\S]*主要市场", 5, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Turnover").addText(matchstr(compinfo,"年营业额</th>[\\s\\S]*年出口额", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("BrandName").addText(matchstr(compinfo,"品牌名称</th>[\\s\\S]*经营模式", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("WareHouse").addText(matchstr(compinfo,"主要经营地点</th>[\\s\\S]*年营业额", 6, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Staff").addText(matchstr(compinfo,"员工人数</th>[\\s\\S]*厂房面积", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Exports").addText(matchstr(compinfo,"年出口额</th>[\\s\\S]*年进口额", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Inports").addText(matchstr(compinfo,"年进口额</th>[\\s\\S]*质量控制", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("OEMAgent").addText(matchstr(compinfo,"是否提供OEM代加工</th>[^<]*<td>[^<]*", 10, 0).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Homepage").addText(matchstr(compinfo,"公司网址</th>[\\s\\S]*是否", 4, 2).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Qualityctl").addText(matchstr(compinfo,"质量控制</th>[\\s\\S]*管理体系认证", 4, 6).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("ManageCertification").addText(matchstr(compinfo,"管理体系认证</th>[\\s\\S]*员工人数", 6, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|&lt;t", "").trim());
+					company.addElement("FactoryArea").addText(matchstr(compinfo,"厂房面积</th>[\\s\\S]*公司网址", 4, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("LastCheckTime").addText(matchstr(compinfo,"最近年检时间</th>[\\s\\S]*营业期限", 6, 4).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("ContactName").addText(matchstr(compinfo,"联系人:[\\s\\S]*职", 4, 1).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					company.addElement("Tel").addText(matchstr(compinfo,"电 话 :[\\s\\S]*手 机 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("fax").addText(matchstr(compinfo,"传 真 :[\\s\\S]*地 址 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("address").addText(matchstr(compinfo,"地 址 :[\\s\\S]*客 服 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-					company.addElement("zip_code");
+					company.addElement("Fax").addText(matchstr(compinfo,"传 真 :[\\s\\S]*地 址 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+					company.addElement("Address").addText(matchstr(compinfo,"地 址 :[\\s\\S]*客 服 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					
-					//System.out.println("   companys info finish crawling.");
+					String credithtml = si.methodPa(url+"/certificates.html");
+					org.jsoup.nodes.Element cat = Jsoup.parse(credithtml).getElementsByAttributeValue("class", "tit-hd12 fl-clr").first();
+					company.addElement("CreditIndex").addText(cat.getElementsByAttributeValue("class", "red-mark").text().trim());
+					org.jsoup.select.Elements cats = cat.getElementsByTag("tr");
+					Element tmp = null;
+					org.jsoup.nodes.Element line = null;
+					line = cats.get(0);
+					tmp = company.addElement("VIPCertification");
+					tmp.addElement("Score").addText(line.child(1).text().trim());
+					tmp.addElement("Time").addText(line.child(2).text().trim());
+					line = cats.get(1);
+					tmp = company.addElement("VIPQualifications");
+					tmp.addElement("Score").addText(line.child(1).text().trim());
+					tmp.addElement("Years").addText(line.child(2).text().trim());
+					line = cats.get(2);
+					tmp = company.addElement("IntegrityManagerment");
+					tmp.addElement("Score").addText(line.child(1).text().trim());
+					tmp.addElement("Month").addText(line.child(2).text().trim());
+					line = cats.get(3);
+					tmp = company.addElement("BusinissLicense");
+					tmp.addElement("Score").addText(line.child(1).text().trim());
+					line = cats.get(4);
+					tmp = company.addElement("HonorCertification");
+					tmp.addElement("Score").addText(line.child(1).text().trim());
+					
 					
 					String supplyhtml = si.methodPa(url+"/supply");
 					//company.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					//company.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					
-					Element shop = shops.addElement("shop");
+					Element shop = shops.addElement("Shop");
 					String[] productgrp = matchstr(supplyhtml, "<ul class=\"fl-clr\">[\\s\\S]*<div class=\"pros-line\">", 0, 0).replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().split("\\s\\s+");
 					int total = 0;
 					//System.out.print("      ");
@@ -221,7 +250,7 @@ public class SimpleCrawler{
 							ptypename = matchstr(productgrp[i],">[^<]*\\(",1,1).trim();
 							pdurl = matchstr(productgrp[i],"http[\\S]*html",0,0).trim();
 						}
-						Element producttype = shop.addAttribute("url", url.trim()).addElement("producttype").addAttribute("name", ptypename);
+						Element producttype = shop.addAttribute("url", url.trim()).addElement("Producttype").addAttribute("name", ptypename);
 						
 						int num = 0;
 						while(true){
@@ -234,32 +263,42 @@ public class SimpleCrawler{
 								System.out.printf("    Doing No.%-4d in Grp %-2d.",num,i+1);
 								String purl = SimpleCrawler.matchstr(producturl[j],"href=\"http[\\S]*html",6,0).trim();
 								if (purl.equals("")) System.err.println("Oh! empty URL from "+url+"/supply"+" @page_"+(i+1)+" num_"+(num+1)+" detail:"+producturl[j]);
-								Element product = producttype.addElement("product");
-								product.addElement("url").addText(purl);
-								product.addElement("shopurl").addText(url);
-								product.addElement("type").addText(ptypename);
+								Element product = producttype.addElement("Product");
+								product.addElement("Url").addText(purl);
+								product.addElement("Shopurl").addText(url);
+								product.addElement("Type").addText(ptypename);
 								String productpage = si.methodPa(purl);
 								
-								product.addElement("name").addText(matchstr(productpage,"detailBox-hd\">[\\s]*<[^<]*>[^<]*</[^<]*>", 14, 0).trim().replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", ""));
-								product.addElement("wholesale").addText(matchstr(productpage, "price-box[\\S\\s]*mro-main-attr", 11, 25).replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().replaceAll("\\s\\s+", " "));
-								product.addElement("sendDate").addText(matchstr(productpage,"发&nbsp;货&nbsp;期[\\S\\s]*所&nbsp;在&nbsp;地", 16, 15).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-								product.addElement("location").addText(matchstr(productpage,"所&nbsp;在&nbsp;地[^<]*</[^>]*>[^<]*<[^>]*>[^<]*</[^>]*>", 16, 0).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim().replaceAll("&nbsp;", " "));
-								product.addElement("telephone").addText(matchstr(productpage,"手&nbsp;&nbsp;&nbsp;&nbsp;机[\\S\\s]*order-btn", 27, 21).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-								Element disinfo = product.addElement("disinfo");
-								String paragraph = SimpleCrawler.matchstr(productpage, "<!-- mod-detail end -->[\\s\\S]*<div class=\"text-detail\">", 0, 0);
-								String[] infoa = SimpleCrawler.matchstr(paragraph,"<th>.[^<]*</th>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
-								String[] infob = SimpleCrawler.matchstr(paragraph,"<td>.[^<]*</td>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
+								product.addElement("Name").addText(matchstr(productpage,"detailBox-hd\">[\\s]*<[^<]*>[^<]*</[^<]*>", 14, 0).trim().replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", ""));
+								product.addElement("Wholesale").addText(matchstr(productpage, "price-box[\\S\\s]*mro-main-attr", 11, 25).replaceAll("<([^a]\\S*?)[^>]*>|</>|<.*? />|", "").trim().replaceAll("\\s\\s+", " "));
+								product.addElement("SendDate").addText(matchstr(productpage,"发&nbsp;货&nbsp;期[\\S\\s]*所&nbsp;在&nbsp;地", 16, 15).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+								product.addElement("Location").addText(matchstr(productpage,"所&nbsp;在&nbsp;地[^<]*</[^>]*>[^<]*<[^>]*>[^<]*</[^>]*>", 16, 0).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim().replaceAll("&nbsp;", " ").replaceAll("[\\s]*", ""));
+								product.addElement("Telephone").addText(matchstr(productpage,"手&nbsp;&nbsp;&nbsp;&nbsp;机[\\S\\s]*order-btn", 27, 21).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
+								Element disinfo = product.addElement("Disinfo");
+								//String paragraph = SimpleCrawler.matchstr(productpage, "<!-- mod-detail end -->[\\s\\S]*<div class=\"text-detail\">", 0, 0);
+								//String[] infoa = SimpleCrawler.matchstr(paragraph,"<th>.[^<]*</th>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
+								//String[] infob = SimpleCrawler.matchstr(paragraph,"<td>.[^<]*</td>", 0, 0).replaceAll("&nbsp;", "").replaceAll("<([^a][^\\s<>]*?)[^><]*>|</>|<.*? />|", "").trim().replaceAll("：", "").split("\\n+");
+								org.jsoup.nodes.Document paged = Jsoup.parse(productpage);
 								
-								for (int k=0;k<Math.min(infoa.length,infob.length);k++){
-									disinfo.addElement(infoa[k].replaceAll("[\\x00-\\xff]", "")).addText(infob[k]);
+								org.jsoup.select.Elements cinfo = paged.getElementsByAttributeValue("class", "attr-list");
+								if (!cinfo.isEmpty()){
+									org.jsoup.nodes.Element catinfo =cinfo.first();
+									org.jsoup.select.Elements infosa = catinfo.getElementsByTag("th");
+									org.jsoup.select.Elements infosb = catinfo.getElementsByTag("td");
+									for (int k=0;k<Math.min(infosa.size(), infosb.size());k++){
+										if (infosa.get(k).text().replaceAll("[\\x00-\\xff℃：]", "").trim().length()<1) continue;
+										disinfo.addElement(infosa.get(k).text().replaceAll("[\\x00-\\xff℃：]", "").trim()).addText(infosb.get(k).text().trim());
+									}
 								}
 								
-								String[] recommends = SimpleCrawler.matchstr(productpage, "desc\"><a[^>]*>[^<]*</a>", 6, 0).trim().split("\\n+");
-								Element relates = product.addElement("relates");
-								for (int k=0;k<recommends.length;k++){
-									relates.addElement("relateurl").addText(SimpleCrawler.matchstr(recommends[k], "href=.*title=",6,8).trim());
-									relates.addElement("relatename").addText(recommends[k].replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
-									
+								Element relates = product.addElement("Relates");
+								org.jsoup.select.Elements recommend = paged.getElementsByAttributeValue("class", "recomened-detail");
+								if (!recommend.isEmpty()){
+									org.jsoup.select.Elements recommends = paged.getElementsByAttributeValue("class", "recomened-detail").first().getElementsByTag("li");
+									for (org.jsoup.nodes.Element rec:recommends){
+										relates.addElement("Relateurl").addText(rec.getElementsByTag("a").first().attr("href"));
+										relates.addElement("Relatename").addText(rec.getElementsByTag("a").first().attr("title"));
+									}
 								}
 								
 								//console.printf("\b\b\b\b\b% 5d", num);
@@ -365,7 +404,7 @@ public class SimpleCrawler{
 	public String methodPa(String strURL){
 		if (!strURL.matches("http[\\S]*")){
 			//System.out.println("URL enpty!");
-			return "";
+			return "";	
 		}
 		System.getProperties().setProperty("proxySet", "true");// 设置代理IP，防止ip被封
 		//for cookies
@@ -378,8 +417,8 @@ public class SimpleCrawler{
 		
 		httpClient.getHostConfiguration().getParams().setParameter("http.default-headers", headers);  // 尽量添加headers，模拟浏览器
 		httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(0, false));
-		//httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-		//httpClient.getHttpConnectionManager().getParams().setSoTimeout(10000); 
+		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+		httpClient.getHttpConnectionManager().getParams().setSoTimeout(10000); 
 		httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 
 		//System.out.println(strURL);
@@ -390,7 +429,7 @@ public class SimpleCrawler{
 		int networkdowncount = 0;
 		for (int i=0;i<3;){
 			networkdowncount = networkdowncount+1-i;
-			int wait = networkdowncount/5;
+			int wait = networkdowncount/3;
 			if (wait >60) wait = 60;
 			if (wait>0){
 				try {
