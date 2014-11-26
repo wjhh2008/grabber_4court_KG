@@ -205,31 +205,40 @@ public class SimpleCrawler{
 					company.addElement("Fax").addText(matchstr(compinfo,"传 真 :[\\s\\S]*地 址 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					company.addElement("Address").addText(matchstr(compinfo,"地 址 :[\\s\\S]*客 服 :", 5, 5).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
 					
-					String credithtml = si.methodPa(url+"/certificates.html");
-					org.jsoup.nodes.Element cat = Jsoup.parse(credithtml).getElementsByAttributeValue("class", "tit-hd12 fl-clr").first();
-					company.addElement("CreditIndex").addText(cat.getElementsByAttributeValue("class", "red-mark").text().trim());
-					org.jsoup.select.Elements cats = cat.getElementsByTag("tr");
-					Element tmp = null;
-					org.jsoup.nodes.Element line = null;
-					line = cats.get(0);
-					tmp = company.addElement("VIPCertification");
-					tmp.addElement("Score").addText(line.child(1).text().trim());
-					tmp.addElement("Time").addText(line.child(2).text().trim());
-					line = cats.get(1);
-					tmp = company.addElement("VIPQualifications");
-					tmp.addElement("Score").addText(line.child(1).text().trim());
-					tmp.addElement("Years").addText(line.child(2).text().trim());
-					line = cats.get(2);
-					tmp = company.addElement("IntegrityManagerment");
-					tmp.addElement("Score").addText(line.child(1).text().trim());
-					tmp.addElement("Month").addText(line.child(2).text().trim());
-					line = cats.get(3);
-					tmp = company.addElement("BusinissLicense");
-					tmp.addElement("Score").addText(line.child(1).text().trim());
-					line = cats.get(4);
-					tmp = company.addElement("HonorCertification");
-					tmp.addElement("Score").addText(line.child(1).text().trim());
-					
+					try{
+						String credithtml = si.methodPa(url+"/credit-profile.html");
+						org.jsoup.select.Elements content = Jsoup.parse(credithtml).getElementsByAttributeValue("class", "rig-bd fl-clr");
+						if (!content.isEmpty()){
+							org.jsoup.nodes.Element cat = content.first();
+							company.addElement("CreditIndex").addText(cat.getElementsByAttributeValue("class", "red-mark").text().trim());
+							org.jsoup.select.Elements tcats = cat.getElementsByAttributeValue("class", "sp-bd");
+							if (!tcats.isEmpty()){
+								org.jsoup.select.Elements cats = tcats.first().getElementsByTag("tr");
+								Element tmp = null;
+								org.jsoup.nodes.Element line = null;
+								line = cats.get(0);
+								tmp = company.addElement("VIPCertification");
+								tmp.addElement("Score").addText(line.child(1).text().trim());
+								tmp.addElement("Time").addText(line.child(2).text().trim());
+								line = cats.get(1);
+								tmp = company.addElement("VIPQualifications");
+								tmp.addElement("Score").addText(line.child(1).text().trim());
+								tmp.addElement("Years").addText(line.child(2).text().trim());
+								line = cats.get(2);
+								tmp = company.addElement("IntegrityManagerment");
+								tmp.addElement("Score").addText(line.child(1).text().trim());
+								tmp.addElement("Month").addText(line.child(2).text().trim());
+								line = cats.get(3);
+								tmp = company.addElement("BusinissLicense");
+								tmp.addElement("Score").addText(line.child(1).text().trim());
+								line = cats.get(4);
+								tmp = company.addElement("HonorCertification");
+								tmp.addElement("Score").addText(line.child(1).text().trim());
+							}
+						}
+					}catch(NullPointerException|IndexOutOfBoundsException e){
+						System.err.println("Credit-profile Get Err");
+					}
 					
 					String supplyhtml = si.methodPa(url+"/supply");
 					//company.addElement("").addText(matchstr(compinfo,).replaceAll("<(\\S*?)[^>]*>|</>|<.*? />|", "").trim());
